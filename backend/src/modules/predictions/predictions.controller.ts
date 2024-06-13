@@ -4,13 +4,13 @@ import {
   Post,
   Body,
   Param,
-  Delete,
   ParseUUIDPipe,
   Req,
   UseGuards,
+  Put,
 } from '@nestjs/common';
 import { PredictionsService } from './predictions.service';
-import { CreatePredictionsDto } from './predictions.dto';
+import { CreatePredictionsDto, UpdatePredictionDto } from './predictions.dto';
 import { UUID } from 'crypto';
 import { AuthGuard } from 'src/guards/auth.guard';
 
@@ -18,8 +18,6 @@ import { AuthGuard } from 'src/guards/auth.guard';
 @Controller('predictions')
 export class PredictionsController {
   constructor(private readonly predictionsService: PredictionsService) {}
-
-  //Pendiente
 
   @Post('new/:id')
   create(
@@ -42,20 +40,26 @@ export class PredictionsController {
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.predictionsService.findOne(+id);
+  findOne(@Param('id') prediction_id: UUID) {
+    return this.predictionsService.findOne(prediction_id);
   }
 
-  /*   @Patch(':id')
+  @Put('update/:id')
   update(
-    @Param('id') id: string,
+    @Req() request,
+    @Param('id') prediction_id: UUID,
     @Body() updatePredictionDto: UpdatePredictionDto,
   ) {
-    return this.predictionsService.update(+id, updatePredictionDto);
-  } */
+    const user = request.user;
+    return this.predictionsService.update(
+      user.id,
+      prediction_id,
+      updatePredictionDto,
+    );
+  }
 
-  @Delete(':id')
+  /*  @Delete(':id')
   remove(@Param('id') id: string) {
     return this.predictionsService.remove(+id);
-  }
+  } */
 }

@@ -1,6 +1,7 @@
-import { Controller, Get, Post, Body, Param, Delete } from '@nestjs/common';
+import { Controller, Post, Body, Get, Param } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { UsersDto } from './users.dto';
+import { UUID } from 'crypto';
 
 @Controller('users')
 export class UsersController {
@@ -17,8 +18,8 @@ export class UsersController {
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.usersService.findOne(+id);
+  findOne(@Param('id') user_id: UUID) {
+    return this.usersService.findOne(user_id);
   }
   /* 
   @Patch(':id')
@@ -26,8 +27,8 @@ export class UsersController {
     return this.usersService.update(+id, updateUserDto);
   } */
 
-  @Delete(':id')
+  /*   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.usersService.remove(+id);
-  }
+  } */
 }

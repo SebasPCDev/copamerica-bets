@@ -1,5 +1,5 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
-import { CreatePredictionsDto } from './predictions.dto';
+import { CreatePredictionsDto, UpdatePredictionDto } from './predictions.dto';
 import { UUID } from 'crypto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Prediction } from 'src/entities/prediction.entity';
@@ -78,19 +78,50 @@ export class PredictionsService {
     }
   }
 
-  findAll() {
-    return `This action returns all predictions`;
+  async findAll() {
+    return await this.predictionRepository.find({
+      relations: ['user', 'game'],
+    });
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} prediction`;
+  async findOne(prediction_id: UUID) {
+    return await this.predictionRepository.findOne({
+      where: { id: prediction_id },
+      relations: ['user', 'game'],
+    });
   }
 
-  /*   update(id: number, updatePredictionDto: UpdatePredictionDto) {
-    return `This action updates a #${id} prediction`;
-  } */
+  async update(
+    user_id: UUID,
+    prediction_id: UUID,
+    updatePredictionDto: UpdatePredictionDto,
+  ) {
+    const user = await this.userRepository.findOne({
+      where: { id: user_id },
+      relations: ['predictions'],
+    });
 
-  remove(id: number) {
+    if (!user) throw new BadRequestException('Usuario no encontrado');
+
+    const predictionToModify = await this.predictionRepository.findOne({
+      where: { id: prediction_id },
+      relations: ['user', 'game'],
+    });
+
+    if (!predictionToModify)
+      throw new BadRequestException('Predicción no encontrada');
+
+    await this.validationDate(predictionToModify.game);
+
+    const updatedPrediction = await this.predictionRepository.save({
+      ...predictionToModify,
+      ...updatePredictionDto,
+    });
+
+    return updatedPrediction;
+  }
+
+  /*   remove(id: number) {
     return `This action removes a #${id} prediction`;
-  }
+  } */
 }

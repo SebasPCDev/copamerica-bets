@@ -1,4 +1,12 @@
-import { Controller, Get, Post, Body, Param, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Param,
+  Delete,
+  Put,
+} from '@nestjs/common';
 import { GamesService } from './games.service';
 import { GamesDto } from './games.dto';
 
@@ -6,12 +14,12 @@ import { GamesDto } from './games.dto';
 export class GamesController {
   constructor(private readonly gamesService: GamesService) {}
 
-  @Post()
+  /*   @Post()
   create(@Body() createGameDto: GamesDto) {
     return this.gamesService.create(createGameDto);
-  }
+  } */
 
-  @Get()
+  /*   @Get()
   findAll() {
     return this.gamesService.findAll();
   }
@@ -19,15 +27,15 @@ export class GamesController {
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.gamesService.findOne(+id);
-  }
+  } */
 
-  /*   @Patch(':id')
+  /*   @Put(':id')
   update(@Param('id') id: string, @Body() updateGameDto: UpdateGameDto) {
     return this.gamesService.update(+id, updateGameDto);
   } */
 
-  @Delete(':id')
+  /*   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.gamesService.remove(+id);
-  }
+  } */
 }

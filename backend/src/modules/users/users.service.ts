@@ -5,6 +5,7 @@ import { User } from 'src/entities/user.entity';
 import { Repository } from 'typeorm';
 import { Role } from 'src/models/roles.enum';
 import * as bcrypt from 'bcrypt';
+import { UUID } from 'crypto';
 
 @Injectable()
 export class UsersService {
@@ -32,19 +33,24 @@ export class UsersService {
     return user;
   }
 
-  findAll() {
-    return `This action returns all users`;
+  async findAll() {
+    return await this.usersRepository.find();
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} user`;
+  async findOne(user_id: UUID) {
+    const user = await this.usersRepository.findOne({
+      where: { id: user_id },
+      relations: ['predictions'],
+    });
+
+    return user;
   }
 
-  /*   update(id: number, updateUserDto: UpdateUserDto) {
+  /*     update(id: number, updateUserDto: UpdateUserDto) {
     return `This action updates a #${id} user`;
-  } */
+  }
 
   remove(id: number) {
     return `This action removes a #${id} user`;
-  }
+  } */
 }
