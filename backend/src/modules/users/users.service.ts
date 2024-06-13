@@ -4,6 +4,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { User } from 'src/entities/user.entity';
 import { Repository } from 'typeorm';
 import { Role } from 'src/models/roles.enum';
+import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class UsersService {
@@ -15,6 +16,9 @@ export class UsersService {
   async create(data: UsersDto) {
     const user = await this.getUserByEmail(data.email);
     if (user) throw new BadRequestException('Usuario existente');
+
+    const hasedPassword = await bcrypt.hash(data.password, 10);
+    data.password = hasedPassword;
 
     const userTemp = { ...data, role: Role.USER };
     const newUserTemp = this.usersRepository.create(userTemp);

@@ -1,14 +1,39 @@
-import { Controller, Get, Post, Body, Param, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Param,
+  Delete,
+  ParseUUIDPipe,
+  Req,
+  UseGuards,
+} from '@nestjs/common';
 import { PredictionsService } from './predictions.service';
-import { PredictionsDto } from './predictions.dto';
+import { CreatePredictionsDto } from './predictions.dto';
+import { UUID } from 'crypto';
+import { AuthGuard } from 'src/guards/auth.guard';
 
+@UseGuards(AuthGuard)
 @Controller('predictions')
 export class PredictionsController {
   constructor(private readonly predictionsService: PredictionsService) {}
 
-  @Post()
-  create(@Body() createPredictionDto: PredictionsDto) {
-    return this.predictionsService.create(createPredictionDto);
+  //Pendiente
+
+  @Post('new/:id')
+  create(
+    @Req() request,
+    @Param('id', ParseUUIDPipe) id_game: UUID,
+    @Body() createPredictionDto: CreatePredictionsDto,
+  ) {
+    const user = request.user;
+    console.log(user);
+    return this.predictionsService.create(
+      user.id,
+      id_game,
+      createPredictionDto,
+    );
   }
 
   @Get()

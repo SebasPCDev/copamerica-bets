@@ -9,6 +9,8 @@ import { PredictionsModule } from './modules/predictions/predictions.module';
 import typeOrmConfig from './config/typeorm';
 import { SeederService } from './seeder.service';
 import { Game } from './entities/game.entity';
+import { JwtModule } from '@nestjs/jwt';
+import { AuthModule } from './modules/auth/auth.module';
 
 @Module({
   imports: [
@@ -21,10 +23,16 @@ import { Game } from './entities/game.entity';
       useFactory: (configService: ConfigService) =>
         configService.get('typeorm'),
     }),
+    JwtModule.register({
+      global: true,
+      // signOptions: { expiresIn: '1h' },
+      secret: process.env.JWT_SECRET,
+    }),
     TypeOrmModule.forFeature([Game]),
     UsersModule,
     GamesModule,
     PredictionsModule,
+    AuthModule,
   ],
   controllers: [AppController],
   providers: [AppService, SeederService],
