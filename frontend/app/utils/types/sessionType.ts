@@ -10,3 +10,8 @@ export type SessionPayload = {
   user: UserSession;
   token: string;
 };
+
+export type LoginData = {
+  email: string;
+  password: string;
+};

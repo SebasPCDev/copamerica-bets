@@ -65,6 +65,7 @@ export const getSession = async () => {
   const cookie = cookies().get("session")?.value;
   const session = await decrypt(cookie);
 
+  console.log(cookie, session);
   // if (!session?.user) {
   //   redirect('/login')
   // }
